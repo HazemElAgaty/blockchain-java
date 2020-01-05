@@ -2,7 +2,6 @@ package client;
 
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import utils.Transformer;
@@ -12,8 +11,7 @@ public class Client {
 	private void start() {
 		try {
 			Blockchain blockchain = new Blockchain();
-			InetAddress ip = InetAddress.getByName("localhost");
-			Socket socket = new Socket(ip, 4444);
+			Socket socket = new Socket("192.168.43.157", 4444);
 			InputStreamReader inputStream = (new InputStreamReader(socket.getInputStream(), "UTF8"));
 			OutputStream outputStream = socket.getOutputStream();
 			WSHandler wsHandler = new WSHandler(socket, inputStream, outputStream, blockchain);
@@ -26,12 +24,15 @@ public class Client {
 					Block latestBlock = blockchain.getLatestBlock();
 					Block newBlock = new Block(0, latestBlock.hash());
 					// Fill block
-					for(int i = 0; i < Blockchain.maxBlockMessages; i++) {
+					for (int i = 0; i < Blockchain.maxBlockMessages; i++) {
 						newBlock.addMessage(blockchain.getMessagesPool().get(i));
 					}
 					System.out.println("<<<<<<<Mining>>>>>>");
 					Block minedBlock = blockchain.mine(newBlock);
-					if (minedBlock != null) {
+
+					if (minedBlock == null) {
+						System.out.println("<<<<<<<Skipping this block>>>>>>");
+					} else {
 						String encodedBlock = Transformer.blockToString(minedBlock);
 						outputStream.write(encodedBlock.getBytes());
 					}
