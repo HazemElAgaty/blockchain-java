@@ -28,16 +28,13 @@ public class WSHandler extends Thread {
 				System.out.println("Running");
 				String notification = new BufferedReader(inputStream).readLine();
 				String [] notificationData = notification.split("#");
-				System.out.println(notificationData[0]);
 				if(notificationData[0].equals("Message")) {
 					Message newMessage = Transformer.stringArrayToMessage(notificationData);
 					this.blockchain.addMessageToPool(newMessage);
-					System.out.println("New message added to the pool");
 				}
 				else if(notificationData[0].equals("Block")) {
 					Block block = Transformer.stringArrayToBlock(notificationData);
 					this.blockchain.addBlock(block);
-					System.out.println("New block added to the chain");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

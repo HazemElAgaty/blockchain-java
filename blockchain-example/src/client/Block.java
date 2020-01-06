@@ -9,6 +9,7 @@ public class Block {
 	private ArrayList<Message> blockMessages;
 	private int blockHeight;
 	private String previousBlockHash;
+	private int previousBlockIndex = 0;
 
 	public Block(int blockHeight, String previousBlockHash) {
 		this.blockHeight = blockHeight;
@@ -45,10 +46,18 @@ public class Block {
 		for (Message message : this.blockMessages) {
 			messagesHashes += message.hash();
 		}
-		return SHA256.hash(this.previousBlockHash + messagesHashes + this.nonce);
+		return SHA256.hash(this.previousBlockHash + this.blockHeight + messagesHashes + this.nonce);
 	}
 
 	public void addMessage(Message message) {
 		this.blockMessages.add(message);
+	}
+
+	public int getPreviousBlockIndex() {
+		return previousBlockIndex;
+	}
+
+	public void setPreviousBlockIndex(int previousBlockIndex) {
+		this.previousBlockIndex = previousBlockIndex;
 	}
 }
